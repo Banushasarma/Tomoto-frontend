@@ -1,9 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./PlaceOrder.css";
 import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const PlaceOrder = () => {
+  const navigate = useNavigate();
   const {
     url,
     token,
@@ -32,6 +34,15 @@ const PlaceOrder = () => {
     const value = event.target.value;
     setData((data) => ({ ...data, [name]: value }));
   };
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/cart");
+    } else if (getTotalCartAmount() === 0) {
+      // Redirect to cart page if cart is empty
+      navigate("/cart");
+    }
+  }, [token]);
 
   const placeOrder = async (event) => {
     event.preventDefault();
